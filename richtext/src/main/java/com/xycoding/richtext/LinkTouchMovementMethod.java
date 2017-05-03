@@ -17,6 +17,7 @@ public class LinkTouchMovementMethod extends LinkMovementMethod {
 
     private static volatile LinkMovementMethod sInstance;
     private ClickSpan mPressedSpan;
+    private float mClickDownX, mClickDownY;
 
     private LinkTouchMovementMethod() {
     }
@@ -36,6 +37,8 @@ public class LinkTouchMovementMethod extends LinkMovementMethod {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             mPressedSpan = getPressedSpan(textView, spannable, event);
             if (mPressedSpan != null) {
+                mClickDownX = event.getRawX();
+                mClickDownY = event.getRawY();
                 int start = spannable.getSpanStart(mPressedSpan);
                 int end = spannable.getSpanEnd(mPressedSpan);
                 mPressedSpan.setPressed(true, textView.getText().subSequence(start, end));
@@ -52,7 +55,7 @@ public class LinkTouchMovementMethod extends LinkMovementMethod {
             if (mPressedSpan != null) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     //click callback
-                    mPressedSpan.onClick(event.getRawX(), event.getRawY());
+                    mPressedSpan.onClick(mClickDownX, mClickDownY);
                 }
                 mPressedSpan.setPressed(false, null);
                 super.onTouchEvent(textView, spannable, event);
