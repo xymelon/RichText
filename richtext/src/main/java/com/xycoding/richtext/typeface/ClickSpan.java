@@ -14,7 +14,7 @@ public class ClickSpan extends ClickableSpan implements IStyleSpan {
     int mPressedBackgroundColor;
     int mNormalTextColor;
     int mPressedTextColor;
-    CharSequence mPressedText;
+    private CharSequence mPressedText;
 
     private OnClickListener mClickListener;
     private boolean mPressed;
