@@ -1,7 +1,7 @@
 # RichText
 [![Release](https://jitpack.io/v/xymelon/richtext.svg)](https://jitpack.io/#xymelon/richtext)
 
-This libary parses custom tag string to `Spannable` string.
+This library parses string with custom tags to `Spannable` string.
 
 ## Features
 - [x] hyperlink click event (with pressed text and background color)
@@ -88,6 +88,7 @@ RichText richText = new RichText.Builder()
                 })
         )
         .build();
+//notice: if set click span, you must invoke this method.
 richText.with(textView);
 
 String tagString = "The <a href='https://en.wikipedia.org/wiki/Rich_Text_Format'>Rich Text Format</a> " +
