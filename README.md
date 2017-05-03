@@ -14,7 +14,7 @@ This libary parses custom tag string to `Spannable` string.
 
 Of course, you can add custom typeface span with api `addTypeSpan`.
 
-<img src="images/RichText.gif" width="300" />
+<img src="RichText.gif"/>
 
 ## Installation
 In your project level `build.gradle` :
