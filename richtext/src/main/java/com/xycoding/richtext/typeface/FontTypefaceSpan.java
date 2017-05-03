@@ -11,12 +11,10 @@ import android.text.style.TypefaceSpan;
  */
 public class FontTypefaceSpan extends TypefaceSpan implements IStyleSpan {
 
-    private final String mFamily;
     private final Typeface mTypeface;
 
-    public FontTypefaceSpan(String family, Typeface typeface) {
-        super(family);
-        mFamily = family;
+    public FontTypefaceSpan(Typeface typeface) {
+        super("");
         mTypeface = typeface;
     }
 
@@ -55,7 +53,7 @@ public class FontTypefaceSpan extends TypefaceSpan implements IStyleSpan {
 
     @Override
     public CharacterStyle getStyleSpan() {
-        return new FontTypefaceSpan(mFamily, mTypeface);
+        return new FontTypefaceSpan(mTypeface);
     }
 
 }

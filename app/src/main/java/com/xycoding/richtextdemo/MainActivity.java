@@ -7,11 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.text.style.TextAppearanceSpan;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xycoding.richtext.RichText;
 import com.xycoding.richtext.typeface.ClickSpan;
+import com.xycoding.richtext.typeface.FontTypefaceSpan;
 import com.xycoding.richtext.typeface.IStyleSpan;
 import com.xycoding.richtext.typeface.LinkClickSpan;
 
@@ -29,9 +31,11 @@ public class MainActivity extends AppCompatActivity {
     private void initRichTextView(TextView textView) {
         final int foregroundTextColor = ContextCompat.getColor(this, R.color.T1);
         final int linkTextColor = ContextCompat.getColor(this, R.color.colorPrimary);
-        int normalTextColor = ContextCompat.getColor(this, R.color.R1);
-        int pressedTextColor = ContextCompat.getColor(this, R.color.W1);
-        int pressedBackgroundColor = ContextCompat.getColor(this, R.color.B1);
+        final int normalTextColor = ContextCompat.getColor(this, R.color.R1);
+        final int pressedTextColor = ContextCompat.getColor(this, R.color.W1);
+        final int pressedBackgroundColor = ContextCompat.getColor(this, R.color.B1);
+        final Typeface georgiaTypeface = Typeface.createFromAsset(getAssets(), "fonts/Georgia Italic.ttf");
+
         RichText richText = new RichText.Builder()
                 .addBlockTypeSpan(new ClickSpan(
                         normalTextColor,
@@ -48,13 +52,20 @@ public class MainActivity extends AppCompatActivity {
                     public CharacterStyle getStyleSpan() {
                         return new ForegroundColorSpan(foregroundTextColor);
                     }
-                }, "f")
+                }, "f", "t")
                 .addBlockTypeSpan(new IStyleSpan() {
                     @Override
                     public CharacterStyle getStyleSpan() {
                         return new StyleSpan(Typeface.BOLD_ITALIC);
                     }
                 }, "bi")
+                .addBlockTypeSpan(new IStyleSpan() {
+                    @Override
+                    public CharacterStyle getStyleSpan() {
+                        return new TextAppearanceSpan(MainActivity.this, R.style.TextSize);
+                    }
+                }, "s")
+                .addBlockTypeSpan(new FontTypefaceSpan(georgiaTypeface), "t")
                 .addLinkTypeSpan(new LinkClickSpan(
                         linkTextColor,
                         pressedTextColor,
@@ -69,7 +80,10 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         richText.with(textView);
 
-        String tagString = "The <a href='https://en.wikipedia.org/wiki/Rich_Text_Format'>Rich Text Format</a> is a <c>proprietary</c> <f>document</f> file format with published <bi>specification</bi> developed by Microsoft Corporation from 1987 until 2008 for cross-platform document interchange with Microsoft products.";
+        String tagString = "The <a href='https://en.wikipedia.org/wiki/Rich_Text_Format'>Rich Text Format</a> " +
+                "is a <c>proprietary</c> <f>document</f> file format with published <bi>specification</bi> " +
+                "developed by <t>Microsoft Corporation</t> from 1987 until 2008 for <s>cross-platform</s> document interchange " +
+                "with <s>Microsoft products</s>.";
         textView.setText(richText.parse(tagString));
     }
 }
