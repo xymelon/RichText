@@ -23,7 +23,7 @@ public class BlockTagStyle extends BaseTagStyle {
     }
 
     @Override
-    public void end(TagBlock block, SpannableStringBuilder builder) {
+    public void end(String tagName, SpannableStringBuilder builder) {
         final int len = builder.length();
         Object obj = getLast(builder, BlockTagStyle.class);
         if (obj != null) {

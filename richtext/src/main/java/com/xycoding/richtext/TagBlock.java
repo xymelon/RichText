@@ -1,7 +1,5 @@
 package com.xycoding.richtext;
 
-import android.support.annotation.Nullable;
-
 import java.util.Map;
 
 /**
@@ -25,7 +23,6 @@ public class TagBlock {
         return name;
     }
 
-    @Nullable
     public Map<String, String> getAttributes() {
         return attributes;
     }

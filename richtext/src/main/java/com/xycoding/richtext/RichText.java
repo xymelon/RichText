@@ -1,6 +1,5 @@
 package com.xycoding.richtext;
 
-import android.support.annotation.NonNull;
 import android.text.Spanned;
 import android.widget.TextView;
 
@@ -21,7 +20,7 @@ public class RichText {
         mTagParser = parser;
     }
 
-    public void with(@NonNull TextView textView) {
+    public void with(TextView textView) {
         textView.setMovementMethod(LinkTouchMovementMethod.getInstance());
     }
 
@@ -39,17 +38,17 @@ public class RichText {
             mParser = new TagParser();
         }
 
-        public Builder addBlockTypeSpan(@NonNull IStyleSpan span, String... tags) {
+        public Builder addBlockTypeSpan(IStyleSpan span, String... tags) {
             mParser.addTypefaceStyle(new BlockTagStyle(span, tags));
             return this;
         }
 
-        public Builder addLinkTypeSpan(@NonNull LinkClickSpan span) {
+        public Builder addLinkTypeSpan(LinkClickSpan span) {
             mParser.addTypefaceStyle(new LinkTagStyle(span));
             return this;
         }
 
-        public Builder addTypeSpan(@NonNull BaseTagStyle style) {
+        public Builder addTypeSpan(BaseTagStyle style) {
             mParser.addTypefaceStyle(style);
             return this;
         }

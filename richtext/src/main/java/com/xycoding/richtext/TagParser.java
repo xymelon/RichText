@@ -62,10 +62,9 @@ class TagParser extends DefaultHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        TagBlock block = new TagBlock(localName);
         for (BaseTagStyle style : mBaseTagStyles) {
             if (style.match(localName)) {
-                style.end(block, mSpannableStringBuilder);
+                style.end(localName, mSpannableStringBuilder);
             }
         }
     }

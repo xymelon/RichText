@@ -23,7 +23,7 @@ public abstract class BaseTagStyle {
 
     abstract public void start(TagBlock block, SpannableStringBuilder builder);
 
-    abstract public void end(TagBlock block, SpannableStringBuilder builder);
+    abstract public void end(String tagName, SpannableStringBuilder builder);
 
     abstract public boolean match(String tagName);
 

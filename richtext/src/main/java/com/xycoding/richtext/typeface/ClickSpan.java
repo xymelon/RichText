@@ -1,8 +1,6 @@
 package com.xycoding.richtext.typeface;
 
 import android.graphics.Color;
-import android.support.annotation.ColorInt;
-import android.support.annotation.Nullable;
 import android.text.TextPaint;
 import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
@@ -21,10 +19,10 @@ public class ClickSpan extends ClickableSpan implements IStyleSpan {
     private OnClickListener mClickListener;
     private boolean mPressed;
 
-    public ClickSpan(@ColorInt int normalTextColor,
-                     @ColorInt int pressedTextColor,
-                     @ColorInt int pressedBackgroundColor,
-                     @Nullable OnClickListener listener) {
+    public ClickSpan(int normalTextColor,
+                     int pressedTextColor,
+                     int pressedBackgroundColor,
+                     OnClickListener listener) {
         mNormalTextColor = normalTextColor;
         mPressedTextColor = pressedTextColor;
         mPressedBackgroundColor = pressedBackgroundColor;
