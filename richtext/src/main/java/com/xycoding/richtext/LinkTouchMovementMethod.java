@@ -52,7 +52,7 @@ public class LinkTouchMovementMethod extends LinkMovementMethod {
             if (mPressedSpan != null) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     //click callback
-                    mPressedSpan.onClick(event.getRawX(), event.getRawX());
+                    mPressedSpan.onClick(event.getRawX(), event.getRawY());
                 }
                 mPressedSpan.setPressed(false, null);
                 super.onTouchEvent(textView, spannable, event);
