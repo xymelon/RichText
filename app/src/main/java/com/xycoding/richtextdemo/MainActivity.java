@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         String tagString = "The <a href='https://en.wikipedia.org/wiki/Rich_Text_Format'>Rich Text Format</a> " +
                 "is a <c>proprietary</c> <f>document</f> file format with published <bi>specification</bi> " +
                 "developed by <t>Microsoft Corporation</t> from 1987 until 2008 for <s>cross-platform</s> document interchange " +
-                "with <s>Microsoft products</s>.";
+                "with Microsoft products.";
         textView.setText(richText.parse(tagString));
     }
 }
