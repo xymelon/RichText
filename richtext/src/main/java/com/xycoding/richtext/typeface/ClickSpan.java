@@ -59,6 +59,13 @@ public class ClickSpan extends ClickableSpan implements IStyleSpan {
     }
 
     public interface OnClickListener {
+        /**
+         * Called when a word has been clicked.
+         *
+         * @param text click word.
+         * @param rawX original raw X coordinate on the screen of this word's center.
+         * @param rawY original raw Y coordinate on the screen of this word's center.
+         */
         void onClick(CharSequence text, float rawX, float rawY);
     }
 
