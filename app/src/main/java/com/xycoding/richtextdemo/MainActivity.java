@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                         pressedBackgroundColor,
                         new ClickSpan.OnClickListener() {
                             @Override
-                            public void onClick(CharSequence text, float rawX, float rawY) {
+                            public void onClick(TextView textView, CharSequence text, float rawX, float rawY) {
                                 Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
                             }
                         }), "c")
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                         pressedBackgroundColor,
                         new LinkClickSpan.OnLinkClickListener() {
                             @Override
-                            public void onClick(String url) {
+                            public void onClick(TextView textView, String url) {
                                 Toast.makeText(MainActivity.this, url, Toast.LENGTH_SHORT).show();
                             }
                         })

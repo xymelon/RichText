@@ -61,7 +61,7 @@ public class LinkTouchMovementMethod extends LinkMovementMethod {
             if (mPressedSpan != null) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     //click callback
-                    mPressedSpan.onClick(mClickDownX, mClickDownY);
+                    mPressedSpan.onClick(textView, mClickDownX, mClickDownY);
                 }
                 mPressedSpan.setPressed(false, null);
                 super.onTouchEvent(textView, spannable, event);

@@ -1,6 +1,7 @@
 package com.xycoding.richtext.typeface;
 
 import android.text.style.CharacterStyle;
+import android.widget.TextView;
 
 /**
  * Created by xymelon on 2017/4/28.
@@ -25,9 +26,9 @@ public class LinkClickSpan extends ClickSpan {
         return span;
     }
 
-    public void onClick(float rawX, float rawY) {
+    public void onClick(TextView textView, float rawX, float rawY) {
         if (mLinkClickListener != null) {
-            mLinkClickListener.onClick(mUrl);
+            mLinkClickListener.onClick(textView, mUrl);
         }
     }
 
@@ -36,7 +37,13 @@ public class LinkClickSpan extends ClickSpan {
     }
 
     public interface OnLinkClickListener {
-        void onClick(String url);
+        /**
+         * Called when hyperlink word has been clicked.
+         *
+         * @param textView clicked text view.
+         * @param url      link url.
+         */
+        void onClick(TextView textView, String url);
     }
 
 }

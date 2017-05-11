@@ -5,6 +5,7 @@ import android.text.TextPaint;
 import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
 import android.view.View;
+import android.widget.TextView;
 
 /**
  * Created by xymelon on 2017/4/28.
@@ -34,9 +35,9 @@ public class ClickSpan extends ClickableSpan implements IStyleSpan {
         //do nothing.
     }
 
-    public void onClick(float rawX, float rawY) {
+    public void onClick(TextView textView, float rawX, float rawY) {
         if (mClickListener != null) {
-            mClickListener.onClick(mPressedText, rawX, rawY);
+            mClickListener.onClick(textView, mPressedText, rawX, rawY);
         }
     }
 
@@ -62,11 +63,12 @@ public class ClickSpan extends ClickableSpan implements IStyleSpan {
         /**
          * Called when a word has been clicked.
          *
-         * @param text click word.
-         * @param rawX original raw X coordinate on the screen of this word's center.
-         * @param rawY original raw Y coordinate on the screen of this word's center.
+         * @param textView clicked text view.
+         * @param text     clicked word.
+         * @param rawX     original raw X coordinate on the screen of this word's center.
+         * @param rawY     original raw Y coordinate on the screen of this word's center.
          */
-        void onClick(CharSequence text, float rawX, float rawY);
+        void onClick(TextView textView, CharSequence text, float rawX, float rawY);
     }
 
 }
