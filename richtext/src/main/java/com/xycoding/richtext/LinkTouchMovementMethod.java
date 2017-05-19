@@ -95,8 +95,6 @@ public class LinkTouchMovementMethod extends LinkMovementMethod {
     }
 
     private void calcWordCenter(TextView textView, int start, int end) {
-        textView.getGlobalVisibleRect(mRect);
-
         //calc selection start position
         mPath.reset();
         textView.getLayout().getCursorPath(start, mPath, textView.getText());
@@ -114,8 +112,12 @@ public class LinkTouchMovementMethod extends LinkMovementMethod {
         mPath.computeBounds(mRectF, false);
         int right = (int) (Math.floor(horizontalPadding + mRectF.left));
 
+        textView.getGlobalVisibleRect(mRect);
         mClickDownX = mRect.left + left + (right - left) / 2;
         mClickDownY = mRect.top + top + (bottom - top) / 2;
+        textView.getLocalVisibleRect(mRect);
+        //if TextView hide partially, you should minus the hided height.
+        mClickDownY -= mRect.top;
     }
 
     private int getVerticalOffset(TextView textView) {
