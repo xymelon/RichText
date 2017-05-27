@@ -12,10 +12,10 @@ import com.xycoding.richtext.typeface.LinkClickSpan;
 public class LinkTagStyle extends BlockTagStyle {
 
     private static final String ATTRIBUTE_HREF = "href";
-    private static final String LINK_TAG = "a";
+    private static final String TAG_LINK = "a";
 
     public LinkTagStyle(LinkClickSpan span) {
-        super(span, LINK_TAG);
+        super(span, TAG_LINK);
     }
 
     @Override

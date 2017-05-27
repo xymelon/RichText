@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 import com.xycoding.richtext.style.BaseTagStyle;
 import com.xycoding.richtext.style.BlockTagStyle;
+import com.xycoding.richtext.style.ImageTagStyle;
 import com.xycoding.richtext.style.LinkTagStyle;
 import com.xycoding.richtext.typeface.IStyleSpan;
 import com.xycoding.richtext.typeface.LinkClickSpan;
@@ -50,6 +51,11 @@ public class RichText {
 
         public Builder addTypeSpan(BaseTagStyle style) {
             mParser.addTypefaceStyle(style);
+            return this;
+        }
+
+        public Builder addImageSpan(ImageSpanGetter getter) {
+            mParser.addTypefaceStyle(new ImageTagStyle(getter));
             return this;
         }
 

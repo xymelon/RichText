@@ -1,17 +1,22 @@
 package com.xycoding.richtextdemo;
 
+import android.content.Context;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.ImageSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TextAppearanceSpan;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xycoding.richtext.ImageSpanGetter;
 import com.xycoding.richtext.RichText;
+import com.xycoding.richtext.typeface.CenteredImageSpan;
 import com.xycoding.richtext.typeface.ClickSpan;
 import com.xycoding.richtext.typeface.FontTypefaceSpan;
 import com.xycoding.richtext.typeface.IStyleSpan;
@@ -28,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         initRichTextView(textView);
     }
 
-    private void initRichTextView(TextView textView) {
+    private void initRichTextView(final TextView textView) {
         final int foregroundTextColor = ContextCompat.getColor(this, R.color.T1);
         final int linkTextColor = ContextCompat.getColor(this, R.color.colorPrimary);
         final int normalTextColor = ContextCompat.getColor(this, R.color.R1);
@@ -77,13 +82,26 @@ public class MainActivity extends AppCompatActivity {
                             }
                         })
                 )
+                .addImageSpan(new ImageSpanGetter() {
+                    @Override
+                    public ImageSpan getImageSpan(String src) {
+                        final Drawable drawable = getDrawable(textView.getContext(), src);
+                        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                        return new CenteredImageSpan(drawable);
+                    }
+                })
                 .build();
         richText.with(textView);
 
         String tagString = "The <a href='https://en.wikipedia.org/wiki/Rich_Text_Format'>Rich Text Format</a> " +
                 "is a <c>proprietary</c> <f>document</f> file format with published <bi>specification</bi> " +
                 "developed by <t>Microsoft Corporation</t> from 1987 until 2008 for <s>cross-platform</s> document interchange " +
-                "with Microsoft products.";
+                "with Microsoft products. <img src='ic_vip' />";
         textView.setText(richText.parse(tagString));
+    }
+
+    public static Drawable getDrawable(Context context, String imageName) {
+        final int drawableId = context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
+        return ContextCompat.getDrawable(context, drawableId);
     }
 }
