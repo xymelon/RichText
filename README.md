@@ -11,6 +11,7 @@ This library parses string with custom tags to `Spannable` string.
 - [x] text size
 - [x] text style (bold, italic)
 - [x] text font
+- [x] image
 
 Of course, you can add custom typeface span with api `addTypeSpan`.
 
@@ -31,13 +32,18 @@ In your app level `build.gradle` :
 
 ```java
 dependencies {
-    compile 'com.github.xymelon:richtext:1.0.6'
+    compile 'com.github.xymelon:richtext:1.0.7'
 }
 ```
 
 ## Usage with custom tags
 ```java
 TextView textView = (TextView) findViewById(R.id.textView);
+
+String tagString = "The <a href='https://en.wikipedia.org/wiki/Rich_Text_Format'>Rich Text Format</a> " +
+        "is a <c>proprietary</c> <f>document</f> file format with published <bi>specification</bi> " +
+        "developed by <t>Microsoft Corporation</t> from 1987 until 2008 for <s>cross-platform</s> document interchange " +
+        "with Microsoft products. <img src='ic_vip' />";
 
 final int foregroundTextColor = ContextCompat.getColor(this, R.color.T1);
 final int linkTextColor = ContextCompat.getColor(this, R.color.colorPrimary);
@@ -53,7 +59,7 @@ RichText richText = new RichText.Builder()
                 pressedBackgroundColor,
                 new ClickSpan.OnClickListener() {
                     @Override
-                    public void onClick(CharSequence text, float rawX, float rawY) {
+                    public void onClick(TextView textView, CharSequence text, float rawX, float rawY) {
                         Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
                     }
                 }), "c")
@@ -82,19 +88,22 @@ RichText richText = new RichText.Builder()
                 pressedBackgroundColor,
                 new LinkClickSpan.OnLinkClickListener() {
                     @Override
-                    public void onClick(String url) {
+                    public void onClick(TextView textView, String url) {
                         Toast.makeText(MainActivity.this, url, Toast.LENGTH_SHORT).show();
                     }
                 })
         )
+        .addImageSpan(new ImageSpanGetter() {
+            @Override
+            public ImageSpan getImageSpan(String src) {
+                final Drawable drawable = getDrawable(textView.getContext(), src);
+                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                return new CenteredImageSpan(drawable);
+            }
+        })
         .build();
 //notice: if set click span, you must invoke this method.
 richText.with(textView);
-
-String tagString = "The <a href='https://en.wikipedia.org/wiki/Rich_Text_Format'>Rich Text Format</a> " +
-        "is a <c>proprietary</c> <f>document</f> file format with published <bi>specification</bi> " +
-        "developed by <t>Microsoft Corporation</t> from 1987 until 2008 for <s>cross-platform</s> document interchange " +
-        "with Microsoft products.";
 textView.setText(richText.parse(tagString));
 ```
 

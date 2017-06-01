@@ -34,6 +34,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initRichTextView(final TextView textView) {
+        String tagString = "The <a href='https://en.wikipedia.org/wiki/Rich_Text_Format'>Rich Text Format</a> " +
+                "is a <c>proprietary</c> <f>document</f> file format with published <bi>specification</bi> " +
+                "developed by <t>Microsoft Corporation</t> from 1987 until 2008 for <s>cross-platform</s> document interchange " +
+                "with Microsoft products. <img src='ic_vip' />";
+
         final int foregroundTextColor = ContextCompat.getColor(this, R.color.T1);
         final int linkTextColor = ContextCompat.getColor(this, R.color.colorPrimary);
         final int normalTextColor = ContextCompat.getColor(this, R.color.R1);
@@ -91,12 +96,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .build();
+        //notice: if set click span, you must invoke this method.
         richText.with(textView);
-
-        String tagString = "The <a href='https://en.wikipedia.org/wiki/Rich_Text_Format'>Rich Text Format</a> " +
-                "is a <c>proprietary</c> <f>document</f> file format with published <bi>specification</bi> " +
-                "developed by <t>Microsoft Corporation</t> from 1987 until 2008 for <s>cross-platform</s> document interchange " +
-                "with Microsoft products. <img src='ic_vip' />";
         textView.setText(richText.parse(tagString));
     }
 

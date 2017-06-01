@@ -40,6 +40,10 @@ public class BlockTagStyle extends BaseTagStyle {
                 //so we set outermost 'ForegroundColorSpan' again.
                 if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M && styles.length > 1) {
                     for (BlockTagStyle style : styles) {
+                        int styleStart = builder.getSpanStart(style);
+                        if (start == styleStart) {
+                            break;
+                        }
                         CharacterStyle span = style.mStyleSpan.getStyleSpan();
                         if (span instanceof ForegroundColorSpan) {
                             builder.setSpan(span, start, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
