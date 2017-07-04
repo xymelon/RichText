@@ -1,5 +1,6 @@
 package com.xycoding.richtext.typeface;
 
+import android.text.Spannable;
 import android.text.style.CharacterStyle;
 import android.widget.TextView;
 
@@ -26,7 +27,8 @@ public class LinkClickSpan extends ClickSpan {
         return span;
     }
 
-    public void onClick(TextView textView, float rawX, float rawY) {
+    public void onClick(TextView textView, String pressedText, float rawX, float rawY, Spannable spannable, int start, int end) {
+        super.onClick(textView, pressedText, rawX, rawY, spannable, start, end);
         if (mLinkClickListener != null) {
             mLinkClickListener.onClick(textView, mUrl);
         }

@@ -12,7 +12,6 @@ import android.view.MotionEvent;
 import android.widget.TextView;
 
 import com.xycoding.richtext.typeface.ClickSpan;
-import com.xycoding.richtext.typeface.WordClickSpan;
 
 /**
  * Created by xymelon on 2017/4/28.
@@ -53,40 +52,25 @@ public class LinkTouchMovementMethod extends LinkMovementMethod {
         } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
             ClickSpan touchedSpan = getPressedSpan(textView, spannable, event);
             if (mClickSpan != null && touchedSpan != mClickSpan) {
-                clearClickSpan();
+                mClickSpan = null;
             }
         } else {
             if (mClickSpan != null) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     //click callback
-                    mClickSpan.setPressed(true, textView.getText().subSequence(mClickSpanStart, mClickSpanEnd).toString());
-                    if (mClickSpan instanceof WordClickSpan) {
-                        ((WordClickSpan) mClickSpan).onClick(textView, mClickDownX, mClickDownY, spannable, mClickSpanStart, mClickSpanEnd);
-                        mClickSpan = null;
-                    } else {
-                        mClickSpan.onClick(textView, mClickDownX, mClickDownY);
-                        textView.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                clearClickSpan();
-                                textView.invalidate();
-                            }
-                        }, 50);
-                    }
-                } else {
-                    clearClickSpan();
+                    mClickSpan.onClick(textView,
+                            textView.getText().subSequence(mClickSpanStart, mClickSpanEnd).toString(),
+                            mClickDownX,
+                            mClickDownY,
+                            spannable,
+                            mClickSpanStart,
+                            mClickSpanEnd);
                 }
+                mClickSpan = null;
             }
         }
         textView.invalidate();
         return true;
-    }
-
-    private void clearClickSpan() {
-        if (mClickSpan != null) {
-            mClickSpan.setPressed(false, null);
-            mClickSpan = null;
-        }
     }
 
     private ClickSpan getPressedSpan(TextView textView, Spannable spannable, MotionEvent event) {
