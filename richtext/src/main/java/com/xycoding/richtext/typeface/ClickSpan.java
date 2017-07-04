@@ -12,13 +12,12 @@ import android.widget.TextView;
  */
 public class ClickSpan extends ClickableSpan implements IStyleSpan {
 
-    int mPressedBackgroundColor;
-    int mNormalTextColor;
-    int mPressedTextColor;
-    private CharSequence mPressedText;
-
-    private OnClickListener mClickListener;
-    private boolean mPressed;
+    protected int mNormalTextColor;
+    protected int mPressedTextColor;
+    protected int mPressedBackgroundColor;
+    protected CharSequence mPressedText;
+    protected OnClickListener mClickListener;
+    protected boolean mPressed;
 
     public ClickSpan(int normalTextColor,
                      int pressedTextColor,

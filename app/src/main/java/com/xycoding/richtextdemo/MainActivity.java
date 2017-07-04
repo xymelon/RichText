@@ -1,16 +1,19 @@
 package com.xycoding.richtextdemo;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TextAppearanceSpan;
+import android.view.Gravity;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +24,7 @@ import com.xycoding.richtext.typeface.ClickSpan;
 import com.xycoding.richtext.typeface.FontTypefaceSpan;
 import com.xycoding.richtext.typeface.IStyleSpan;
 import com.xycoding.richtext.typeface.LinkClickSpan;
+import com.xycoding.richtext.typeface.WordClickSpan;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         String tagString = "The <a href='https://en.wikipedia.org/wiki/Rich_Text_Format'>Rich Text Format</a> " +
                 "is a <c>proprietary</c> <f>document</f> file format with published <bi>specification</bi> " +
                 "developed by <t>Microsoft Corporation</t> from 1987 until 2008 for <s>cross-platform</s> document interchange " +
-                "with Microsoft products. <img src='ic_vip' />";
+                "with <c1>Microsoft</c1> products. <img src='ic_vip' />";
 
         final int foregroundTextColor = ContextCompat.getColor(this, R.color.T1);
         final int linkTextColor = ContextCompat.getColor(this, R.color.colorPrimary);
@@ -57,6 +61,26 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
                             }
                         }), "c")
+                .addBlockTypeSpan(new WordClickSpan(
+                        normalTextColor,
+                        pressedTextColor,
+                        pressedBackgroundColor,
+                        new WordClickSpan.OnWordClickListener() {
+                            @Override
+                            public void onClick(final WordClickSpan span, TextView textView, CharSequence text, float rawX, float rawY) {
+                                AlertDialog dialog = new AlertDialog.Builder(textView.getContext())
+                                        .setMessage(text)
+                                        .create();
+                                dialog.getWindow().getAttributes().gravity = Gravity.BOTTOM;
+                                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                    @Override
+                                    public void onDismiss(DialogInterface dialog) {
+                                        span.clearBackgroundColor();
+                                    }
+                                });
+                                dialog.show();
+                            }
+                        }), "c1")
                 .addBlockTypeSpan(new IStyleSpan() {
                     @Override
                     public CharacterStyle getStyleSpan() {

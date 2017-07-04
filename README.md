@@ -32,7 +32,7 @@ In your app level `build.gradle` :
 
 ```java
 dependencies {
-    compile 'com.github.xymelon:richtext:1.0.7'
+    compile 'com.github.xymelon:richtext:1.0.8'
 }
 ```
 

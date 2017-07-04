@@ -4,7 +4,6 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.Layout;
-import android.text.Selection;
 import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
@@ -13,6 +12,7 @@ import android.view.MotionEvent;
 import android.widget.TextView;
 
 import com.xycoding.richtext.typeface.ClickSpan;
+import com.xycoding.richtext.typeface.WordClickSpan;
 
 /**
  * Created by xymelon on 2017/4/28.
@@ -20,11 +20,13 @@ import com.xycoding.richtext.typeface.ClickSpan;
 public class LinkTouchMovementMethod extends LinkMovementMethod {
 
     private static volatile LinkMovementMethod sInstance;
-    private ClickSpan mPressedSpan;
+    private ClickSpan mClickSpan;
     private float mClickDownX, mClickDownY;
     private Path mPath = new Path();
     private RectF mRectF = new RectF();
     private Rect mRect = new Rect();
+    private int mClickSpanStart;
+    private int mClickSpanEnd;
 
     private LinkTouchMovementMethod() {
     }
@@ -40,36 +42,51 @@ public class LinkTouchMovementMethod extends LinkMovementMethod {
     }
 
     @Override
-    public boolean onTouchEvent(TextView textView, Spannable spannable, MotionEvent event) {
+    public boolean onTouchEvent(final TextView textView, Spannable spannable, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            mPressedSpan = getPressedSpan(textView, spannable, event);
-            if (mPressedSpan != null) {
-                int start = spannable.getSpanStart(mPressedSpan);
-                int end = spannable.getSpanEnd(mPressedSpan);
-                calcWordCenter(textView, start, end);
-                mPressedSpan.setPressed(true, textView.getText().subSequence(start, end));
-                Selection.setSelection(spannable, start, end);
+            mClickSpan = getPressedSpan(textView, spannable, event);
+            if (mClickSpan != null) {
+                mClickSpanStart = spannable.getSpanStart(mClickSpan);
+                mClickSpanEnd = spannable.getSpanEnd(mClickSpan);
+                calcWordCenter(textView, mClickSpanStart, mClickSpanEnd);
             }
         } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
             ClickSpan touchedSpan = getPressedSpan(textView, spannable, event);
-            if (mPressedSpan != null && touchedSpan != mPressedSpan) {
-                mPressedSpan.setPressed(false, null);
-                mPressedSpan = null;
-                Selection.removeSelection(spannable);
+            if (mClickSpan != null && touchedSpan != mClickSpan) {
+                clearClickSpan();
             }
         } else {
-            if (mPressedSpan != null) {
+            if (mClickSpan != null) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     //click callback
-                    mPressedSpan.onClick(textView, mClickDownX, mClickDownY);
+                    mClickSpan.setPressed(true, textView.getText().subSequence(mClickSpanStart, mClickSpanEnd).toString());
+                    if (mClickSpan instanceof WordClickSpan) {
+                        ((WordClickSpan) mClickSpan).onClick(textView, mClickDownX, mClickDownY, spannable, mClickSpanStart, mClickSpanEnd);
+                        mClickSpan = null;
+                    } else {
+                        mClickSpan.onClick(textView, mClickDownX, mClickDownY);
+                        textView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                clearClickSpan();
+                                textView.invalidate();
+                            }
+                        }, 50);
+                    }
+                } else {
+                    clearClickSpan();
                 }
-                mPressedSpan.setPressed(false, null);
-                super.onTouchEvent(textView, spannable, event);
             }
-            mPressedSpan = null;
-            Selection.removeSelection(spannable);
         }
+        textView.invalidate();
         return true;
+    }
+
+    private void clearClickSpan() {
+        if (mClickSpan != null) {
+            mClickSpan.setPressed(false, null);
+            mClickSpan = null;
+        }
     }
 
     private ClickSpan getPressedSpan(TextView textView, Spannable spannable, MotionEvent event) {
