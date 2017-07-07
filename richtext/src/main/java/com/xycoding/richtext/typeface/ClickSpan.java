@@ -116,6 +116,18 @@ public class ClickSpan extends ClickableSpan implements IStyleSpan {
         mPressedBackgroundColor = color;
     }
 
+    public int getNormalTextColor() {
+        return mNormalTextColor;
+    }
+
+    public int getPressedTextColor() {
+        return mPressedTextColor;
+    }
+
+    public int getPressedBackgroundColor() {
+        return mPressedBackgroundColor;
+    }
+
     public interface OnClickListener {
         /**
          * Called when a word has been clicked.

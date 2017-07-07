@@ -8,7 +8,11 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 
 import com.xycoding.richtext.TagBlock;
+import com.xycoding.richtext.typeface.ClickSpan;
 import com.xycoding.richtext.typeface.IStyleSpan;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by xymelon on 2017/4/28.
@@ -36,9 +40,9 @@ public class BlockTagStyle extends BaseTagStyle {
             builder.removeSpan(obj);
             if (start != len) {
                 builder.setSpan(mStyleSpan.getStyleSpan(), start, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                //In android 6.0, 'ForegroundColorSpan in ForegroundColorSpan' shows wrong color,
-                //so we set outermost 'ForegroundColorSpan' again.
                 if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M && styles.length > 1) {
+                    //In android 6.0, 'ForegroundColorSpan in ForegroundColorSpan' shows wrong color,
+                    //so we set outermost 'ForegroundColorSpan' again.
                     for (BlockTagStyle style : styles) {
                         int styleStart = builder.getSpanStart(style);
                         if (start == styleStart) {
@@ -49,6 +53,42 @@ public class BlockTagStyle extends BaseTagStyle {
                             builder.setSpan(span, start, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                             //The outer span will be taken effect.
                             break;
+                        }
+                    }
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    //In android 7.0, 'ClickSpan with foreground color in ForegroundColorSpan' shows wrong color.
+                    //eg, '<b><c>Hello</c></b> <b><c>Hello</c></b> <c>world</c>.',
+                    //'b' is ForegroundColorSpan and 'c' is ClickSpan with foreground color,
+                    //the second 'Hello' shows 'c' color, but we want the 'b' color.
+                    //So when exists multi foreground colors in same place, we just retain outermost foreground color.
+                    final CharacterStyle[] characterStyles = builder.getSpans(start, len, CharacterStyle.class);
+                    if (characterStyles != null && characterStyles.length > 1) {
+                        final int stylesLength = characterStyles.length;
+                        final List<CharacterStyle> removeStyles = new ArrayList<>();
+                        int color = -1;
+                        for (int i = stylesLength - 1; i >= 0; i--) {
+                            if (color != -1) {
+                                for (int j = 0; j <= i; j++) {
+                                    final CharacterStyle characterStyle = characterStyles[j];
+                                    if (characterStyle instanceof ClickSpan) {
+                                        ((ClickSpan) characterStyle).setNormalTextColor(color);
+                                    } else if (characterStyle instanceof ForegroundColorSpan) {
+                                        removeStyles.add(characterStyle);
+                                    }
+                                }
+                                break;
+                            } else {
+                                //outermost foreground color
+                                final CharacterStyle characterStyle = characterStyles[i];
+                                if (characterStyle instanceof ForegroundColorSpan) {
+                                    color = ((ForegroundColorSpan) characterStyle).getForegroundColor();
+                                } else if (characterStyle instanceof ClickSpan) {
+                                    color = ((ClickSpan) characterStyle).getNormalTextColor();
+                                }
+                            }
+                        }
+                        for (CharacterStyle style : removeStyles) {
+                            builder.removeSpan(style);
                         }
                     }
                 }
