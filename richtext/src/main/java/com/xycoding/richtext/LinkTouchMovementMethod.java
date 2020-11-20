@@ -83,10 +83,15 @@ public class LinkTouchMovementMethod extends LinkMovementMethod {
         x += textView.getScrollX();
         y += textView.getScrollY();
 
-        Layout layout = textView.getLayout();
-        int line = layout.getLineForVertical(y);
-        int off = layout.getOffsetForHorizontal(line, x);
+        final Layout layout = textView.getLayout();
+        final int line = layout.getLineForVertical(y);
 
+        if (x < layout.getLineLeft(line) || x > layout.getLineRight(line)) {
+            //click nothing
+            return null;
+        }
+
+        final int off = layout.getOffsetForHorizontal(line, x);
         ClickSpan[] link = spannable.getSpans(off, off, ClickSpan.class);
         if (link.length > 0) {
             //if multi spans find same position, return outer span.
