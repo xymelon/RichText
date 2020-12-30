@@ -7,6 +7,7 @@ import android.text.Layout;
 import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.widget.TextView;
@@ -21,11 +22,12 @@ public class LinkTouchMovementMethod extends LinkMovementMethod {
     private static volatile LinkMovementMethod sInstance;
     private ClickSpan mClickSpan;
     private float mClickDownX, mClickDownY;
-    private Path mPath = new Path();
-    private RectF mRectF = new RectF();
-    private Rect mRect = new Rect();
+    private final Path mPath = new Path();
+    private final RectF mRectF = new RectF();
+    private final Rect mRect = new Rect();
     private int mClickSpanStart;
     private int mClickSpanEnd;
+    private GestureDetector mGestureDetector;
 
     private LinkTouchMovementMethod() {
     }
@@ -41,36 +43,40 @@ public class LinkTouchMovementMethod extends LinkMovementMethod {
     }
 
     @Override
-    public boolean onTouchEvent(final TextView textView, Spannable spannable, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            mClickSpan = getPressedSpan(textView, spannable, event);
-            if (mClickSpan != null) {
-                mClickSpanStart = spannable.getSpanStart(mClickSpan);
-                mClickSpanEnd = spannable.getSpanEnd(mClickSpan);
-                calcWordCenter(textView, mClickSpanStart, mClickSpanEnd);
-            }
-        } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            ClickSpan touchedSpan = getPressedSpan(textView, spannable, event);
-            if (mClickSpan != null && touchedSpan != mClickSpan) {
-                mClickSpan = null;
-            }
-        } else {
-            if (mClickSpan != null) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    //click callback
-                    mClickSpan.onClick(textView,
-                            textView.getText().subSequence(mClickSpanStart, mClickSpanEnd).toString(),
-                            mClickDownX,
-                            mClickDownY,
-                            spannable,
-                            mClickSpanStart,
-                            mClickSpanEnd);
+    public boolean onTouchEvent(final TextView textView, final Spannable spannable, MotionEvent event) {
+        if (mGestureDetector == null) {
+            mGestureDetector = new GestureDetector(textView.getContext().getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    mClickSpan = getPressedSpan(textView, spannable, e);
+                    if (mClickSpan != null) {
+                        mClickSpanStart = spannable.getSpanStart(mClickSpan);
+                        mClickSpanEnd = spannable.getSpanEnd(mClickSpan);
+                        //word center
+                        calcWordCenter(textView, mClickSpanStart, mClickSpanEnd);
+                        //click callback
+                        mClickSpan.onClick(
+                                textView,
+                                textView.getText().subSequence(mClickSpanStart, mClickSpanEnd).toString(),
+                                mClickDownX,
+                                mClickDownY,
+                                spannable,
+                                mClickSpanStart,
+                                mClickSpanEnd
+                        );
+                    }
+                    textView.invalidate();
+                    return true;
                 }
-                mClickSpan = null;
-            }
+            });
         }
-        textView.invalidate();
-        return true;
+        final boolean handled = mGestureDetector.onTouchEvent(event);
+        if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+            //Be sure to clean up, otherwise memory leaks.
+            mClickSpan = null;
+            mGestureDetector = null;
+        }
+        return handled;
     }
 
     private ClickSpan getPressedSpan(TextView textView, Spannable spannable, MotionEvent event) {
