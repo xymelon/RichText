@@ -26,17 +26,19 @@ public class BlockTagStyle extends BaseTagStyle {
     @Override
     public void start(TagBlock block, SpannableStringBuilder builder) {
         final int len = builder.length();
-        builder.setSpan(this, len, len, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        //Insert a marker Span, then locate it based on the marker later and set the actual Span.
+        //Note: You must create new instances, otherwise when setting multiple times, subsequent getSpans calls will only retrieve one instance. eg, <b>hello <b>world</b></b>, the 'hello' will not show 'b' color.
+        builder.setSpan(new BlockTagStyle(mStyleSpan), len, len, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
     }
 
     @Override
     public void end(String tagName, SpannableStringBuilder builder) {
         final int len = builder.length();
-        BlockTagStyle[] styles = builder.getSpans(0, builder.length(), BlockTagStyle.class);
+        final BlockTagStyle[] styles = builder.getSpans(0, builder.length(), BlockTagStyle.class);
         if (styles.length != 0) {
             //This knows that the last returned object from getSpans() will be the most recently added.
-            Object obj = styles[styles.length - 1];
-            int start = builder.getSpanStart(obj);
+            final Object obj = styles[styles.length - 1];
+            final int start = builder.getSpanStart(obj);
             builder.removeSpan(obj);
             if (start != len) {
                 builder.setSpan(mStyleSpan.getStyleSpan(), start, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
